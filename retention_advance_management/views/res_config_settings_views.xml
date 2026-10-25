@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_retention" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.retention</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Retention &amp; Advance Recovery" name="retention_advance_setting_container">
+                    <setting id="retention_account_setting" string="Retention Receivable Account" company_dependent="1" help="Receivable account specifically used to hold customer retention deductions until handover/release.">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label string="Retention Account" for="retention_account_id" class="col-lg-4 o_light_label"/>
+                                <field name="retention_account_id" options="{'no_create': True, 'no_open': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label string="Default Retention %" for="retention_default_percentage" class="col-lg-4 o_light_label"/>
+                                <field name="retention_default_percentage" class="col-lg-3"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Customers menu items -->
+    <menuitem id="menu_action_retention_release"
+              name="Retention Releases"
+              parent="account.menu_finance_receivables"
+              action="action_retention_release"
+              sequence="18"/>
+
+
+    <!-- Reporting menu item -->
+    <menuitem id="menu_action_retention_report"
+              name="Retention &amp; Advance Report"
+              parent="account.account_reports_management_menu"
+              action="action_retention_report_wizard"
+              sequence="15"/>
+</odoo>

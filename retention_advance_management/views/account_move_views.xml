@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Customer Invoice Form View Inheritance -->
+    <record id="view_move_form_inherit_retention" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.retention</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Retention & Advance Page to Notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page id="retention_advance_tab" string="Retention &amp; Advance" invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <group>
+                        <group string="Retention Deduction">
+                            <field name="is_retention_applicable" readonly="state != 'draft'"/>
+                            <field name="retention_percentage" invisible="not is_retention_applicable" readonly="state != 'draft'"/>
+                            <field name="retention_amount" invisible="not is_retention_applicable" readonly="state != 'draft'"/>
+                            <field name="expected_retention_handover_date" invisible="not is_retention_applicable" readonly="state != 'draft'"/>
+                            <field name="retention_released_amount" invisible="state == 'draft' or not is_retention_applicable"/>
+                            <field name="retention_balance_amount" invisible="state == 'draft' or not is_retention_applicable"/>
+                        </group>
+                        <group string="Advance Recovery">
+                            <field name="advance_payment_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="advance_recovery_method" invisible="not advance_payment_id" readonly="state != 'draft'"/>
+                            <field name="advance_recovery_percentage" invisible="not advance_payment_id or advance_recovery_method != 'percentage'" readonly="state != 'draft'"/>
+                            <field name="advance_recovery_amount" invisible="not advance_payment_id" readonly="state != 'draft'"/>
+                            <field name="sale_order_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="amount_payable_immediately" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook invisible="state == 'draft'">
+                        <page string="Retention Transactions" invisible="not retention_transaction_ids">
+                            <field name="retention_transaction_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="retention_type"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Advance Recoveries" invisible="not advance_recovery_ids">
+                            <field name="advance_recovery_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="payment_id"/>
+                                    <field name="recovery_type"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+
+            <!-- Hide standard Amount Due when retention/advance deductions are present to prevent conflicting totals -->
+            <xpath expr="//field[@name='amount_residual']" position="attributes">
+                <attribute name="invisible">is_retention_applicable and (retention_amount != 0 or advance_recovery_amount != 0)</attribute>
+            </xpath>
+
+            <!-- Show Deduction Breakdown in Subtotal Footer -->
+            <xpath expr="//field[@name='amount_residual']" position="before">
+                <field name="retention_amount" string="Less: Retention" readonly="1" help="" invisible="not is_retention_applicable or retention_amount == 0"/>
+                <field name="advance_recovery_amount" string="Less: Advance Recovery" readonly="1" help="" invisible="not is_retention_applicable or advance_recovery_amount == 0"/>
+                <field name="amount_payable_immediately" string="Amount Due Immediately" readonly="1" help="" invisible="not is_retention_applicable or (retention_amount == 0 and advance_recovery_amount == 0)" class="oe_subtotal_footer_separator"/>
+            </xpath>
+
+            <!-- Journal Items list view inheritance -->
+            <xpath expr="//field[@name='line_ids']//list//field[@name='name']" position="after">
+                <field name="is_retention_line" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Invoice Tree View Inheritance -->
+    <record id="view_invoice_tree_inherit_retention" model="ir.ui.view">
+        <field name="name">account.invoice.list.inherit.retention</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_residual_signed']" position="before">
+                <field name="retention_amount" optional="show" sum="Total Retention"/>
+                <field name="advance_recovery_amount" optional="show" sum="Total Advance Recovery"/>
+                <field name="amount_payable_immediately" optional="show" sum="Total Payable Immediately"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_retention_report_wizard_form" model="ir.ui.view">
+        <field name="name">retention.report.wizard.form</field>
+        <field name="model">retention.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Retention and Advance Recovery Report">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="as_of_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="sale_order_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Reporting Information:</strong>
+                        <ul>
+                            <li><strong>Total Invoiced:</strong> Net taxable work value excluding VAT up to the as-of date.</li>
+                            <li><strong>Retention Held:</strong> Retention withheld on posted customer invoices.</li>
+                            <li><strong>Retention Released:</strong> Retention released to accounts receivable via release entries.</li>
+                            <li><strong>Retention Balance:</strong> Remaining customer retention withheld.</li>
+                            <li><strong>Advance Received:</strong> Customer advances received up to the as-of date.</li>
+                            <li><strong>Advance Recovered:</strong> Advances deducted against progress invoices.</li>
+                            <li><strong>Advance Balance:</strong> Remaining recoverable customer advance.</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_export_xlsx" string="Export to Excel (XLSX)" type="object" class="oe_highlight" icon="fa-file-excel-o"/>
+                    <button string="Close" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Retention Report Wizard -->
+    <record id="action_retention_report_wizard" model="ir.actions.act_window">
+        <field name="name">Retention &amp; Advance Report</field>
+        <field name="res_model">retention.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Retention Release Form View -->
+    <record id="view_retention_release_form" model="ir.ui.view">
+        <field name="name">retention.release.form</field>
+        <field name="model">retention.release</field>
+        <field name="arch" type="xml">
+            <form string="Retention Release">
+                <header>
+                    <button name="action_post" string="Release Retention" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel Release" type="object"
+                            invisible="state != 'posted'" confirm="Are you sure you want to cancel this release? The accounting entry will be reversed."/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="left_group">
+                            <field name="partner_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="sale_order_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="state != 'draft'" groups="base.group_multi_currency"/>
+                        </group>
+                        <group name="right_group">
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="journal_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="move_id" invisible="not move_id" readonly="1"/>
+                            <field name="amount" readonly="1" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Invoice Allocations" name="allocations_page">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="invoice_id" options="{'no_create': True}"/>
+                                    <field name="retention_held"/>
+                                    <field name="retention_already_released"/>
+                                    <field name="retention_available"/>
+                                    <field name="amount_to_release"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Accounting Transactions" name="transactions_page" invisible="state == 'draft'">
+                            <field name="retention_transaction_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="move_id"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Retention Release List View -->
+    <record id="view_retention_release_tree" model="ir.ui.view">
+        <field name="name">retention.release.list</field>
+        <field name="model">retention.release</field>
+        <field name="arch" type="xml">
+            <list string="Retention Releases" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="date"/>
+                <field name="amount" sum="Total Released"/>
+                <field name="currency_id" groups="base.group_multi_currency" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Retention Release Search View -->
+    <record id="view_retention_release_search" model="ir.ui.view">
+        <field name="name">retention.release.search</field>
+        <field name="model">retention.release</field>
+        <field name="arch" type="xml">
+            <search string="Search Retention Releases">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Released" name="filter_posted" domain="[('state', '=', 'posted')]"/>
+                <separator/>
+                <filter string="Customer" name="group_by_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                <filter string="Project" name="group_by_order" domain="[]" context="{'group_by': 'sale_order_id'}"/>
+                <filter string="Date" name="group_by_date" domain="[]" context="{'group_by': 'date'}"/>
+                <filter string="Status" name="group_by_state" domain="[]" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Retention Releases -->
+    <record id="action_retention_release" model="ir.actions.act_window">
+        <field name="name">Retention Releases</field>
+        <field name="res_model">retention.release</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_retention_release_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a retention release to transfer withheld customer retention into accounts receivable.
+            </p>
+        </field>
+    </record>
+</odoo>

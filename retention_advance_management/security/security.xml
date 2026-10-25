@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequences -->
+        <record id="seq_retention_release" model="ir.sequence">
+            <field name="name">Retention Release</field>
+            <field name="code">retention.release</field>
+            <field name="prefix">RET/REL/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_retention_transaction" model="ir.sequence">
+            <field name="name">Retention Transaction</field>
+            <field name="code">retention.transaction</field>
+            <field name="prefix">RET/TX/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_advance_recovery_transaction" model="ir.sequence">
+            <field name="name">Advance Recovery Transaction</field>
+            <field name="code">advance.recovery.transaction</field>
+            <field name="prefix">ADV/REC/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Multi-Company Record Rules -->
+        <record id="retention_release_comp_rule" model="ir.rule">
+            <field name="name">Retention Release multi-company</field>
+            <field name="model_id" ref="model_retention_release"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="retention_transaction_comp_rule" model="ir.rule">
+            <field name="name">Retention Transaction multi-company</field>
+            <field name="model_id" ref="model_retention_transaction"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="advance_recovery_transaction_comp_rule" model="ir.rule">
+            <field name="name">Advance Recovery Transaction multi-company</field>
+            <field name="model_id" ref="model_advance_recovery_transaction"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

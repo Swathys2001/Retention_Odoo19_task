@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_retention_transaction_invoice,retention.transaction.invoice,model_retention_transaction,account.group_account_invoice,1,1,1,1
+access_retention_transaction_manager,retention.transaction.manager,model_retention_transaction,account.group_account_manager,1,1,1,1
+access_advance_recovery_transaction_invoice,advance.recovery.transaction.invoice,model_advance_recovery_transaction,account.group_account_invoice,1,1,1,1
+access_advance_recovery_transaction_manager,advance.recovery.transaction.manager,model_advance_recovery_transaction,account.group_account_manager,1,1,1,1
+access_retention_release_invoice,retention.release.invoice,model_retention_release,account.group_account_invoice,1,1,1,1
+access_retention_release_manager,retention.release.manager,model_retention_release,account.group_account_manager,1,1,1,1
+access_retention_release_line_invoice,retention.release.line.invoice,model_retention_release_line,account.group_account_invoice,1,1,1,1
+access_retention_release_line_manager,retention.release.line.manager,model_retention_release_line,account.group_account_manager,1,1,1,1
+access_retention_report_wizard_user,retention.report.wizard.user,model_retention_report_wizard,account.group_account_invoice,1,1,1,1
